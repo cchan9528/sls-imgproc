@@ -26,6 +26,7 @@ async function upload(options) {
             body: JSON.stringify(res)
         }
     } catch(err) {
+        console.log(err);
         return {
             statusCode: 500,
             body: JSON.stringify(err)
@@ -42,6 +43,5 @@ async function s3Hook(event, context){
 
 
 module.exports = {
-    'upload' : upload,
-    's3Hook' : s3Hook
+    'handler': handler
 }
