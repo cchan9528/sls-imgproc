@@ -2,14 +2,20 @@
 
 const AWS = require('aws-sdk');
 
-async function upload(event, context) {
+async function handler(event, context){
+    let options = {}; // parse options here
+    let res = await upload(options);
+    return res;
+}
+
+async function upload(options) {
     const s3client = new AWS.S3({
         s3ForcePathStyle: true,
         accessKeyId: process.env.s3accessKeyId,
         secretAccessKey: process.env.s3secretAccessKey,
         endpoint: new AWS.Endpoint('http://'+process.env.s3host+':'+process.env.s3port),
     });
-    try{
+    try {
         let res = await s3client.putObject({
             Bucket: 'local-bucket',
             Key: '321',

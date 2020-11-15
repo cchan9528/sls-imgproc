@@ -40,3 +40,12 @@ Benefits:
     ```
 
     Change 3001 to the appropriate port number given in output of step 1
+
+
+## Testing
+
+1. In a terminal, run the following in this directory
+
+    ```
+    $ npm run test
+    ```
