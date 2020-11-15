@@ -1,23 +1,39 @@
-########################################################
-# Meta
-########################################################
 service: imgproc
 frameworkVersion: '2'
 provider:
     name: aws
     runtime: nodejs12.x
-
-########################################################
-# Functions
-########################################################
+resources:
+    Resources:
+        images:
+            Type: AWS::S3::Bucket
+            Properties:
+                BucketName: local-bucket
 functions:
-    hello:
-        handler: handler.hello
+    upload:
+        handler: src/upload/handler.upload
         events:
-            - http: GET hello
-
-########################################################
-# Plugins
-########################################################
+            - http: GET /upload
+        environment:
+            s3host: ${self:custom.s3.host}
+            s3port: ${self:custom.s3.port}
+            s3accessKeyId: ${self:custom.s3.accessKeyId}
+            s3secretAccessKey: ${self:custom.s3.accessKeyId}
+            s3bucket: ${self:resources.Resources.images.Properties.BucketName}
+    s3hook:
+        handler: src/upload/handler.s3Hook
+        events:
+            - s3: ${self:resources.Resources.images.Properties.BucketName}
 plugins:
     - serverless-offline
+    - serverless-s3-local
+custom:
+    s3:
+        ########################################
+        # serverless-s3-local plugin config
+        ########################################
+        host: localhost
+        directory: /tmp
+        port: 4569
+        accessKeyId: ${file(./env.yml):s3accessKeyId}
+        secretAccessKey: ${file(./env.yml):s3secretAccessKey}

@@ -23,13 +23,14 @@ Benefits:
 0. Download the following:
 
 - [Serverless Framework](https://www.serverless.com/open-source/)
-- [serverless-offline](https://www.serverless.com/plugins/serverless-offline) (Serverless Framework plugin)
-- [wscat](https://www.npmjs.com/package/wscat) (WebSocket client utility for testing purposes)
+- [serverless-offline](https://www.serverless.com/plugins/serverless-offline)
+- [serverless-s3-local](https://www.serverless.com/plugins/serverless-s3-local)
+- [wscat](https://www.npmjs.com/package/wscat)
 
 1. In a terminal, run the following in this directory (project root) to start the serverless services
 
     ```
-    $ serverless offline
+    $ serverless offline [--printOutput]
     ```
 
 2. In a new terminal tab/window, connect to the API Gateway service as a new client
