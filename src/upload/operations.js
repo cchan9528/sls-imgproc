@@ -1,12 +1,4 @@
-'use strict';
-
 const AWS = require('aws-sdk');
-
-async function handler(event, context){
-    let options = {}; // parse options here
-    let res = await upload(options);
-    return res;
-}
 
 async function upload(options) {
     const s3client = new AWS.S3({
@@ -34,14 +26,13 @@ async function upload(options) {
     }
 };
 
-
 async function s3Hook(event, context){
     console.log(JSON.stringify(event));
     console.log(JSON.stringify(context));
     console.log(JSON.stringify(process.env));
 }
 
-
 module.exports = {
-    'handler': handler
+    'upload' : upload,
+    's3Hook' : s3Hook
 }

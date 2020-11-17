@@ -11,7 +11,7 @@ resources:
                 BucketName: local-bucket
 functions:
     upload:
-        handler: src/upload/index.handler
+        handler: src/upload/request.handler
         events:
             - http: GET /upload
         environment:
@@ -20,10 +20,10 @@ functions:
             s3accessKeyId: ${self:custom.s3.accessKeyId}
             s3secretAccessKey: ${self:custom.s3.accessKeyId}
             s3bucket: ${self:resources.Resources.images.Properties.BucketName}
-    # s3hook:
-    #     handler: src/upload/index.s3Hook
-    #     events:
-    #         - s3: ${self:resources.Resources.images.Properties.BucketName}
+    s3hook:
+        handler: src/upload/operations.s3Hook
+        events:
+            - s3: ${self:resources.Resources.images.Properties.BucketName}
 plugins:
     - serverless-offline
     - serverless-s3-local
