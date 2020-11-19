@@ -1,4 +1,4 @@
-const operations = require('../../src/upload/operations.js');
+const operations = require('../../src/signedurl/operations.js');
 
 //////////////////////////////////////////////
 // mockReturnThis() is essential for chaining
@@ -7,7 +7,7 @@ const operations = require('../../src/upload/operations.js');
 // top-level mock functions can be called
 //////////////////////////////////////////////
 const mockS3 = {
-    putObject : jest.fn().mockReturnThis(),
+    getSignedURL : jest.fn().mockReturnThis(),
     promise : jest.fn()
 };
 jest.mock('aws-sdk', function(){
@@ -20,12 +20,12 @@ jest.mock('aws-sdk', function(){
 //////////////////////////////////////////////
 // Tests
 //////////////////////////////////////////////
-test('Basic Local S3 Uploading', function(){
-    let mockres = {'s':312123123};
+test('Basic get S3 Signed URL', function(){
+    let mockres = 'http://helloworld.com/signedurl';
     mockS3.promise.mockResolvedValue(mockres);
 
     return operations.upload({}).then(function(res){
         expect(res).toEqual(mockres);
-        expect(mockS3.putObject).toHaveBeenCalled();
+        expect(mockS3.getSignedURL).toHaveBeenCalled();
     });
 });

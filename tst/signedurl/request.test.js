@@ -1,13 +1,13 @@
-const request = require('../../src/upload/request.js');
-const operations = require('../../src/upload/operations.js');
-jest.mock('../../src/upload/operations.js');
+const request = require('../../src/signedurl/request.js');
+const operations = require('../../src/signedurl/operations.js');
+jest.mock('../../src/signedurl/operations.js');
 
 //////////////////////////////////////////////
 // Tests
 //////////////////////////////////////////////
-test('Upload handler', function(){
+test('SignedURL handler', function(){
     let mockres = {'statusCode' : 200, 'body' : 'hello, world!'};
-    operations.upload.mockResolvedValue(mockres.body);
+    operations.getSignedURL.mockResolvedValue(mockres.body);
 
     return request.handler({}, {}).then(function(res){
         expect(res).toHaveProperty('statusCode');

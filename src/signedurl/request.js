@@ -4,7 +4,7 @@ async function handler(event, context){
     let options = {}; // parse options here
     let res = {};
     try {
-        key = await operations.upload(options);
+        key = await operations.getSignedURL(options);
         res.statusCode = 200;
         res.body = JSON.stringify(key);
     } catch (err) {
