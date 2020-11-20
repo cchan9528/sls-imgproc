@@ -10,6 +10,13 @@ resources:
             Properties:
                 BucketName: local-bucket
 functions:
+    signedurl:
+        handler: src/signedurl/request.handler
+        events:
+            - websocket:
+                route: $connect
+        environment:
+            s3bucket: ${self:resources.Resources.images.Properties.BucketName}
     upload:
         handler: src/upload/request.handler
         events:
@@ -20,10 +27,19 @@ functions:
             s3accessKeyId: ${self:custom.s3.accessKeyId}
             s3secretAccessKey: ${self:custom.s3.accessKeyId}
             s3bucket: ${self:resources.Resources.images.Properties.BucketName}
+
+    ########################################################################
+    # Hooks for helpfulness and/or completeness
+    ########################################################################
     s3hook:
         handler: src/upload/operations.s3Hook
         events:
             - s3: ${self:resources.Resources.images.Properties.BucketName}
+    disconnectHook:
+        handler: src/signedurl/operations.disconnectHook
+        events:
+            - websocket:
+                route: $disconnect
 plugins:
     - serverless-offline
     - serverless-s3-local

@@ -7,8 +7,7 @@ const operations = require('../../src/signedurl/operations.js');
 // top-level mock functions can be called
 //////////////////////////////////////////////
 const mockS3 = {
-    getSignedURL : jest.fn().mockReturnThis(),
-    promise : jest.fn()
+    getSignedURL : jest.fn()
 };
 jest.mock('aws-sdk', function(){
     return {
@@ -22,9 +21,9 @@ jest.mock('aws-sdk', function(){
 //////////////////////////////////////////////
 test('Basic get S3 Signed URL', function(){
     let mockres = 'http://helloworld.com/signedurl';
-    mockS3.promise.mockResolvedValue(mockres);
+    mockS3.getSignedURL.mockResolvedValue(mockres);
 
-    return operations.upload({}).then(function(res){
+    return operations.getSignedURL({}).then(function(res){
         expect(res).toEqual(mockres);
         expect(mockS3.getSignedURL).toHaveBeenCalled();
     });

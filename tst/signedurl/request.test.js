@@ -6,13 +6,16 @@ jest.mock('../../src/signedurl/operations.js');
 // Tests
 //////////////////////////////////////////////
 test('SignedURL handler', function(){
-    let mockres = {'statusCode' : 200, 'body' : 'hello, world!'};
+    let mockevent   = {'requestContext' : {'connectionId' : 1}};
+    let mockcontext = {};
+    let mockres     = {'statusCode' : 200, 'body' : 'hello, world!'};
     operations.getSignedURL.mockResolvedValue(mockres.body);
 
-    return request.handler({}, {}).then(function(res){
+    return request.handler(mockevent, mockcontext).then(function(res){
         expect(res).toHaveProperty('statusCode');
         expect(res.statusCode).toEqual(mockres.statusCode);
         expect(res).toHaveProperty('body');
         expect(JSON.parse(res.body)).toEqual(mockres.body);
+        expect(axios.post).toHaveBeenCalled();
     });
 });
