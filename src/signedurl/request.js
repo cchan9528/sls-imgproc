@@ -3,14 +3,14 @@ const operations = require('./operations.js');
 
 async function handler(event, context){
     let options = { 'uid' : event.requestContext.connectionId };
-    operations.getSignedURL(options, async function(err, url){
+    await operations.getSignedURL(options, async function(err, signedurl) {
         let res = {};
         if (err) {
             res.statusCode = 500;
             res.err = JSON.stringify(err);
         } else {
             res.statusCode = 200;
-            res.body = JSON.stringify(key);
+            res.body = signedurl;
         }
         try {
             let user = `http://localhost:3001/@connections/${options.uid}`;
@@ -20,7 +20,7 @@ async function handler(event, context){
             console.log(err);
         }
     });
-}
+};
 
 module.exports = {
     'handler': handler

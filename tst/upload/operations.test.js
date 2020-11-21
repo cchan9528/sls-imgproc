@@ -5,6 +5,10 @@ const operations = require('../../src/upload/operations.js');
 // It returns 'this', which, in this case,
 // is the mock itself; thereafter, more
 // top-level mock functions can be called
+//
+// This mock in particular doesn't need to be
+// at top of file because it is not
+// needed/created until runtime.
 //////////////////////////////////////////////
 const mockS3 = {
     putObject : jest.fn().mockReturnThis(),
