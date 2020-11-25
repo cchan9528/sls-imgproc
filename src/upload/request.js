@@ -25,22 +25,23 @@ async function handler(event, context){
         acc[uid].push(instance);
         return acc;
     }, {});
-
-    Promise.all(Object.keys(uploads).map(function(uid){
-        let user = `http://localhost:3001/@connections/${uid}`;
-        return new Promise(function(resolve, reject){
-            console.log(`Sent to ${user} (user ${uid}): ${uploads[uid]}`);
-            resolve();
-        });
-        // return axios.post(user, {
-        //     'statusCode' : 200,
-        //     'success' : uploads[uid]
-        // });
-    })).then(function(notifications){
-        console.log('Notified users');
-    }).catch(function(err){
+    try {
+        //////////////////////////////////////////////////
+        // Notify users upload worked
+        //////////////////////////////////////////////////
+        let res = await Promise.all(Object.keys(uploads).map(function(uid){
+            let user = `http://localhost:3001/@connections/${uid}`;
+            return axios.post(user, {
+                'statusCode' : 200,
+                'success' : uploads[uid]
+            });
+        }));
+    } catch (err) {
+        //////////////////////////////////////////////////
+        // To Be Implemented
+        //////////////////////////////////////////////////
         console.log(err);
-    });
+    }
 };
 
 module.exports = {

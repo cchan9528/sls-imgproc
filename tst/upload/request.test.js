@@ -1,18 +1,45 @@
+const axios = require('axios');
+const yaml = require('js-yaml');
+const fs = require('fs');
+const path = require('path');
+try {
+    const doc = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname, '../../env.yml'), 'utf8'));
+    process.env.uploaddelim = doc.uploaddelim;
+} catch (err) {
+    console.log(err);
+    process.exit(1);
+}
+const UPLOADDELIM = process.env.uploaddelim;
 const request = require('../../src/upload/request.js');
-const operations = require('../../src/upload/operations.js');
-jest.mock('../../src/upload/operations.js');
+jest.mock('axios');
 
 //////////////////////////////////////////////
 // Tests
 //////////////////////////////////////////////
-test('Upload handler', function(){
-    let mockres = {'statusCode' : 200, 'body' : 'hello, world!'};
-    operations.upload.mockResolvedValue(mockres.body);
+test('Upload Hook', async function(){
+    //////////////////////////////////////////////
+    // Mocks
+    //////////////////////////////////////////////
+    const mockuploads =  { 'b' : ['c', 'asdfsf'], 'C': ['sdjfsl'] };
+    const mockevent = {
+        'Records' : Object.keys(mockuploads).reduce( function(acc, uid) {
+            for (const x of mockuploads[uid]) {
+                acc.push({ 's3' : {'object' : {'key' : `upload/${uid}/${x}`}}});
+            }
+            return acc;
+        }, [])
+    };
+    const mockcontext = {};
+    const mockapigateway = `http://localhost:3001/@connections/`;
+    axios.post.mockImplementation(function(url, data){ return data; });
 
-    return request.handler({}, {}).then(function(res){
-        expect(res).toHaveProperty('statusCode');
-        expect(res.statusCode).toEqual(mockres.statusCode);
-        expect(res).toHaveProperty('body');
-        expect(JSON.parse(res.body)).toEqual(mockres.body);
+    //////////////////////////////////////////////
+    // Tests
+    //////////////////////////////////////////////
+    await request.handler(mockevent, mockcontext);
+    Object.keys(mockuploads).map(function(uid){
+        let mockuser = `${mockapigateway}${uid}`;
+        let mocknotifs = {'statusCode' : 200, 'success' : mockuploads[uid]};
+        expect(axios.post).toHaveBeenCalledWith(mockuser, mocknotifs);
     });
 });
