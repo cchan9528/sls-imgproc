@@ -1,6 +1,8 @@
+const axios = require('axios');
 const operations = require('./operations.js');
+const UPLOADDELIM = process.env.uploaddelim;
 
-async function handler(event, context){
+async function test_handler(event, context){
     let options = {}; // parse options here
     let res = {};
     try {
@@ -14,6 +16,34 @@ async function handler(event, context){
     return res;
 }
 
+async function handler(event, context){
+    let uploads = event.Records.reduce(function(acc, obj){
+        let [ , uid, instance] = obj.s3.object.key.split(UPLOADDELIM);
+        if (!acc[uid]) {
+            acc[uid] = [];
+        }
+        acc[uid].push(instance);
+        return acc;
+    }, {});
+
+    Promise.all(Object.keys(uploads).map(function(uid){
+        let user = `http://localhost:3001/@connections/${uid}`;
+        return new Promise(function(resolve, reject){
+            console.log(`Sent to ${user} (user ${uid}): ${uploads[uid]}`);
+            resolve();
+        });
+        // return axios.post(user, {
+        //     'statusCode' : 200,
+        //     'success' : uploads[uid]
+        // });
+    })).then(function(notifications){
+        console.log('Notified users');
+    }).catch(function(err){
+        console.log(err);
+    });
+};
+
 module.exports = {
-    'handler': handler
+    'handler': handler,
+    'test_handler' : test_handler
 }

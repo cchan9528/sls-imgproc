@@ -27,6 +27,8 @@ Benefits:
 - [serverless-s3-local](https://www.serverless.com/plugins/serverless-s3-local)
 - [wscat](https://www.npmjs.com/package/wscat)
 
+0. Edit env.yml with the appropriate environment variable values
+
 1. In a terminal, run the following in this directory (project root) to start the serverless services
 
     ```

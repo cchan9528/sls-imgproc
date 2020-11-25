@@ -17,8 +17,8 @@ functions:
                 route: $connect
         environment:
             s3bucket: ${self:resources.Resources.images.Properties.BucketName}
-    upload:
-        handler: src/upload/request.handler
+    test_upload:
+        handler: src/upload/request.test_handler
         events:
             - http: GET /upload
         environment:
@@ -27,14 +27,21 @@ functions:
             s3accessKeyId: ${self:custom.s3.accessKeyId}
             s3secretAccessKey: ${self:custom.s3.accessKeyId}
             s3bucket: ${self:resources.Resources.images.Properties.BucketName}
+    upload:
+        handler: src/upload/request.handler
+        events:
+            - s3: ${self:resources.Resources.images.Properties.BucketName}
+        environment:
+            s3host: ${self:custom.s3.host}
+            s3port: ${self:custom.s3.port}
+            s3accessKeyId: ${self:custom.s3.accessKeyId}
+            s3secretAccessKey: ${self:custom.s3.accessKeyId}
+            s3bucket: ${self:resources.Resources.images.Properties.BucketName}
+            uploaddelim: ${self:custom.s3.uploaddelim}
 
     ########################################################################
     # Hooks for helpfulness and/or completeness
     ########################################################################
-    s3hook:
-        handler: src/upload/operations.s3Hook
-        events:
-            - s3: ${self:resources.Resources.images.Properties.BucketName}
     disconnectHook:
         handler: src/signedurl/operations.disconnectHook
         events:
@@ -53,3 +60,4 @@ custom:
         port: 4569
         accessKeyId: ${file(./env.yml):s3accessKeyId}
         secretAccessKey: ${file(./env.yml):s3secretAccessKey}
+        uploaddelim: ${file(./env.yml):uploaddelim}

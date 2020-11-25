@@ -9,7 +9,7 @@ async function upload(options) {
     });
     let res = await s3client.putObject({
         Bucket: 'local-bucket',
-        Key: '321',
+        Key: 'upload/123/456',
         Body: new Buffer('cdasdsdf')
     }).promise();
     return res;
