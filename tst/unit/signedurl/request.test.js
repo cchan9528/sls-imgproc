@@ -1,8 +1,8 @@
 jest.mock('axios');
-jest.mock('../../src/signedurl/operations.js');
-const axios      = require('axios');
-const request    = require('../../src/signedurl/request.js');
-const operations = require('../../src/signedurl/operations.js');
+jest.mock('../../../src/signedurl/operations.js');
+const axios = require('axios');
+const request = require('../../../src/signedurl/request.js');
+const operations = require('../../../src/signedurl/operations.js');
 
 //////////////////////////////////////////////
 // Tests

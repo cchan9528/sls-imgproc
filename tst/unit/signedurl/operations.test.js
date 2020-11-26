@@ -1,4 +1,4 @@
-const operations = require('../../src/signedurl/operations.js');
+const operations = require('../../../src/signedurl/operations.js');
 
 //////////////////////////////////////////////
 // mockReturnThis() is essential for chaining

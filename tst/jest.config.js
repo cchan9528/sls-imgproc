@@ -1,3 +1,8 @@
+const tstdir = "<rootDir>"; // Jest special token
+
 module.exports = {
-    'verbose': true
+    'verbose': true,
+    'testPathIgnorePatterns' : [
+        `${tstdir}/integration`
+    ]
 }

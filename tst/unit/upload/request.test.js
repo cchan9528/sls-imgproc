@@ -3,14 +3,19 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 try {
-    const doc = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname, '../../env.yml'), 'utf8'));
+    //////////////////////////////////////////////
+    // Be sure to edit env.yml
+    // so these values aren't null/undefined
+    //////////////////////////////////////////////
+    const env = path.resolve(__dirname, '../../../env.yml');
+    const doc = yaml.safeLoad(fs.readFileSync(env, 'utf8'));
     process.env.uploaddelim = doc.uploaddelim;
 } catch (err) {
     console.log(err);
     process.exit(1);
 }
 const UPLOADDELIM = process.env.uploaddelim;
-const request = require('../../src/upload/request.js');
+const request = require('../../../src/upload/request.js');
 jest.mock('axios');
 
 //////////////////////////////////////////////

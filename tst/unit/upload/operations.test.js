@@ -1,4 +1,4 @@
-const operations = require('../../src/upload/operations.js');
+const operations = require('../../../src/upload/operations.js');
 
 //////////////////////////////////////////////
 // mockReturnThis() is essential for chaining
