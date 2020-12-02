@@ -1,20 +1,5 @@
 const axios = require('axios');
-const operations = require('./operations.js');
 const UPLOADDELIM = process.env.uploaddelim;
-
-async function test_handler(event, context){
-    let options = {}; // parse options here
-    let res = {};
-    try {
-        key = await operations.upload(options);
-        res.statusCode = 200;
-        res.body = JSON.stringify(key);
-    } catch (err) {
-        res.statusCode = 500;
-        res.err = JSON.stringify(err);
-    }
-    return res;
-}
 
 async function handler(event, context){
     let uploads = event.Records.reduce(function(acc, obj){
@@ -45,6 +30,5 @@ async function handler(event, context){
 };
 
 module.exports = {
-    'handler': handler,
-    'test_handler' : test_handler
+    'handler': handler
 }
