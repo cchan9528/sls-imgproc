@@ -1,4 +1,4 @@
-const operations = require('../../../src/signedurl/operations.js');
+const operations = require('../../../src/presignedurl/operations.js');
 
 //////////////////////////////////////////////
 // mockReturnThis() is essential for chaining
@@ -20,21 +20,21 @@ jest.mock('aws-sdk', function(){
 test('Basic get S3 Signed URL', function(done) {
     let mockreq = {'uid' : 1};
     let mockerr = null;
-    let mocksignedurl = 'http://helloworld.com/signedurl';
+    let mockpresignedurl = 'http://helloworld.com/presignedurl';
 
     // To pass info to a callback, mimic the
     // signature of the caller
     mockS3.getSignedURL.mockImplementation(function(op, options, cb){
         expect(op).toEqual('putObject');
         expect(options['Key']).toEqual(`upload/${mockreq.uid}`);
-        cb(mockerr, mocksignedurl);
+        cb(mockerr, mockpresignedurl);
     });
 
-    function mockcb(err, signedurl) {
+    function mockcb(err, mockpresignedurl) {
         if (err) {
             done(err); // Fail this specific test if err
         } else {
-            expect(signedurl).toBe(mocksignedurl);
+            expect(mockpresignedurl).toBe(mockpresignedurl);
             done();
         }
     }

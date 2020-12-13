@@ -3,14 +3,14 @@ const operations = require('./operations.js');
 
 async function handler(event, context){
     let options = { 'uid' : event.requestContext.connectionId };
-    await operations.getSignedURL(options, async function(err, signedurl) {
+    await operations.getPresignedUrl(options, async function(err, presignedurl){
         let res = {};
         if (err) {
             res.statusCode = 500;
             res.err = JSON.stringify(err);
         } else {
             res.statusCode = 200;
-            res.body = signedurl;
+            res.body = presignedurl;
         }
         try {
             let user = `http://localhost:3001/@connections/${options.uid}`;

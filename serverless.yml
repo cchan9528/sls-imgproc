@@ -3,6 +3,13 @@ frameworkVersion: '2'
 provider:
     name: aws
     runtime: nodejs12.x
+    environment:
+        s3host: ${self:custom.s3.host}
+        s3port: ${self:custom.s3.port}
+        s3accessKeyId: ${self:custom.s3.accessKeyId}
+        s3secretAccessKey: ${self:custom.s3.accessKeyId}
+        s3bucket: ${self:resources.Resources.images.Properties.BucketName}
+        uploaddelim: ${self:custom.s3.uploaddelim}
 resources:
     Resources:
         images:
@@ -10,51 +17,23 @@ resources:
             Properties:
                 BucketName: local-bucket
 functions:
-    signedurl:
-        handler: src/signedurl/request.handler
+    presignedurl:
+        handler: src/presignedurl/request.handler
         events:
             - websocket:
                 route: $connect
-        environment:
-            s3bucket: ${self:resources.Resources.images.Properties.BucketName}
-    test_upload:
-        handler: src/upload/request.test_handler
-        events:
-            - http: GET /upload
-        environment:
-            s3host: ${self:custom.s3.host}
-            s3port: ${self:custom.s3.port}
-            s3accessKeyId: ${self:custom.s3.accessKeyId}
-            s3secretAccessKey: ${self:custom.s3.accessKeyId}
-            s3bucket: ${self:resources.Resources.images.Properties.BucketName}
     upload:
-        handler: src/upload/request.handler
+        handler: src/upload/event.handler
         events:
             - s3: ${self:resources.Resources.images.Properties.BucketName}
-        environment:
-            s3host: ${self:custom.s3.host}
-            s3port: ${self:custom.s3.port}
-            s3accessKeyId: ${self:custom.s3.accessKeyId}
-            s3secretAccessKey: ${self:custom.s3.accessKeyId}
-            s3bucket: ${self:resources.Resources.images.Properties.BucketName}
-            uploaddelim: ${self:custom.s3.uploaddelim}
-
-    ########################################################################
-    # Hooks for helpfulness and/or completeness
-    ########################################################################
-    disconnectHook:
-        handler: src/signedurl/operations.disconnectHook
-        events:
-            - websocket:
-                route: $disconnect
 plugins:
     - serverless-offline
     - serverless-s3-local
 custom:
+    ################################################
+    # serverless-s3-local (plugin) config
+    ################################################
     s3:
-        ########################################
-        # serverless-s3-local plugin config
-        ########################################
         host: localhost
         directory: /tmp
         port: 4569
