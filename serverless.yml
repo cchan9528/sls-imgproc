@@ -22,8 +22,8 @@ functions:
         events:
             - websocket:
                 route: $connect
-    upload:
-        handler: src/upload/event.handler
+    notify:
+        handler: src/notify/event.handler
         events:
             - s3: ${self:resources.Resources.images.Properties.BucketName}
 plugins:

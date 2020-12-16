@@ -2,23 +2,23 @@ const axios = require('axios');
 const UPLOADDELIM = process.env.uploaddelim;
 
 async function handler(event, context){
-    let uploads = event.Records.reduce(function(acc, obj){
-        let [ , uid, instance] = obj.s3.object.key.split(UPLOADDELIM);
-        if (!acc[uid]) {
-            acc[uid] = [];
+    let uploads = event.Records.reduce(function(userToInstances, obj){
+        let [ , user, instance] = obj.s3.object.key.split(UPLOADDELIM);
+        if (!userToInstances[user]) {
+            userToInstances[user] = [];
         }
-        acc[uid].push(instance);
-        return acc;
+        userToInstances[user].push(instance);
+        return userToInstances;
     }, {});
     try {
         //////////////////////////////////////////////////
-        // Notify users upload worked
+        // Notify users upload(s) worked
         //////////////////////////////////////////////////
-        let res = await Promise.all(Object.keys(uploads).map(function(uid){
-            let user = `http://localhost:3001/@connections/${uid}`;
-            return axios.post(user, {
+        let res = await Promise.all(Object.keys(uploads).map(function(user){
+            let conn = `http://localhost:3001/@connections/${user}`;
+            return axios.post(conn, {
                 'statusCode' : 200,
-                'success' : uploads[uid]
+                'success' : uploads[user]
             });
         }));
     } catch (err) {
