@@ -26,6 +26,11 @@ functions:
         handler: src/notify/event.handler
         events:
             - s3: ${self:resources.Resources.images.Properties.BucketName}
+    clean:
+        handler: src/clean/event.handler
+        events:
+            - websocket:
+                route: $disconnect
 plugins:
     - serverless-offline
     - serverless-s3-local
