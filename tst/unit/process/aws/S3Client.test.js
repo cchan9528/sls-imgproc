@@ -21,7 +21,7 @@ jest.mock('aws-sdk', function(){
 });
 jest.mock('fs');
 
-const S3Client = require('../../../src/process/aws/S3Client.js');
+const S3Client = require('../../../../src/process/aws/S3Client.js');
 
 //////////////////////////////////////////////
 // Tests
@@ -29,7 +29,9 @@ const S3Client = require('../../../src/process/aws/S3Client.js');
 const s3Client = new S3Client();
 
 test.skip('S3Client class: download()', async function(){
+    await s3Client.download();
 });
 
 test.skip('S3Client class: upload()', async function(){
+    await s3client.upload()
 });

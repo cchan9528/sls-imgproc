@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "jest --config ./tst/jest.config.js",
+    "tests": "jest --config ./tst/jest.config.js",
     "jest": "jest --config ./tst/jest.config.js",
     "offline": "serverless offline"
   },

@@ -11,7 +11,7 @@ jest.mock('aws-sdk', function(){
 });
 
 const axios = require('axios');
-const operations = require('./../../../src/upload/operations.js');
+const operations = require('./../../../src/notify/event.js');
 
 test.skip('Notify S3 Upload', async function(){
     const options = {};

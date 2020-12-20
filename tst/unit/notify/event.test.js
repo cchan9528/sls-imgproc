@@ -15,13 +15,13 @@ try {
     process.exit(1);
 }
 const UPLOADDELIM = process.env.uploaddelim;
-const request = require('../../../src/upload/event.js');
+const request = require('../../../src/notify/event.js');
 jest.mock('axios');
 
 //////////////////////////////////////////////
 // Tests
 //////////////////////////////////////////////
-test('Upload Hook', async function(){
+test('Notify Hook', async function(){
     //////////////////////////////////////////////
     // Mocks
     //////////////////////////////////////////////

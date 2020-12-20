@@ -4,7 +4,7 @@ const AWS = require('aws-sdk');
 
 const DLM = process.env.UPLOADDELIM;
 
-class S3Client(){
+class S3Client {
     constructor() {
         this._s3Client = new AWS.S3({
             s3ForcePathStyle: true,

@@ -6,7 +6,7 @@ const operations = require('../../../src/presignedurl/operations.js');
 // is the mock itself; thereafter, more
 // top-level mock functions can be called
 //////////////////////////////////////////////
-const mockS3 = { getSignedURL : jest.fn() };
+const mockS3 = { createPresignedPost : jest.fn() };
 jest.mock('aws-sdk', function(){
     return {
         'S3' : jest.fn(function(){ return mockS3; }),
@@ -24,8 +24,7 @@ test('Basic get S3 Signed URL', function(done) {
 
     // To pass info to a callback, mimic the
     // signature of the caller
-    mockS3.getSignedURL.mockImplementation(function(op, options, cb){
-        expect(op).toEqual('putObject');
+    mockS3.createPresignedPost.mockImplementation(function(options, cb){
         expect(options['Key']).toEqual(`upload/${mockreq.uid}`);
         cb(mockerr, mockpresignedurl);
     });
@@ -39,5 +38,5 @@ test('Basic get S3 Signed URL', function(done) {
         }
     }
 
-    operations.getSignedURL(mockreq, mockcb);
+    operations.getPresignedUrl(mockreq, mockcb);
 });
