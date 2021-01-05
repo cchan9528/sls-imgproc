@@ -17,7 +17,7 @@ jest.mock('aws-sdk', function(){
 //////////////////////////////////////////////
 // Tests
 //////////////////////////////////////////////
-test('Basic get S3 Signed URL', function(done) {
+test('Basic get S3 Signed URL', async function() {
     let mockreq = {'uid' : 1};
     let mockerr = null;
     let mockpresignedurl = 'http://helloworld.com/presignedurl';
@@ -25,18 +25,15 @@ test('Basic get S3 Signed URL', function(done) {
     // To pass info to a callback, mimic the
     // signature of the caller
     mockS3.createPresignedPost.mockImplementation(function(options, cb){
-        expect(options['Key']).toEqual(`upload/${mockreq.uid}`);
+        // Can add dummy logic/implementation but for now....
+        //
+        // ...simply call cb with the mock err and presignedurl
+        // ("Short-circuit"). cb *should not* be modified/mocked since we don't
+        // want to test implementation - only behavior. In this case, as of
+        // 1/4/2021 cb is the wrapper to simply resolve/reject the promise
         cb(mockerr, mockpresignedurl);
     });
 
-    function mockcb(err, mockpresignedurl) {
-        if (err) {
-            done(err); // Fail this specific test if err
-        } else {
-            expect(mockpresignedurl).toBe(mockpresignedurl);
-            done();
-        }
-    }
-
-    operations.getPresignedUrl(mockreq, mockcb);
+    let res = await operations.getPresignedUrl(mockreq);
+    expect(res).toBe(mockpresignedurl);
 });
