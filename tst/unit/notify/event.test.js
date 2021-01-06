@@ -3,15 +3,17 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 try {
-    //////////////////////////////////////////////
-    // Be sure to edit env.yml
-    // so these values aren't null/undefined
-    //////////////////////////////////////////////
-    const env = path.resolve(__dirname, '../../../env.yml');
-    const doc = yaml.safeLoad(fs.readFileSync(env, 'utf8'));
-    process.env.uploaddelim = doc.uploaddelim;
+    const env = yaml.load(
+        fs.readFileSync(
+            path.resolve(__dirname, '../../../env.yml'),
+            'utf8'
+        )
+    );
+    process.env.uploaddelim = env.uploaddelim;
 } catch (err) {
     console.log(err);
+    console.log('\n\nThis test relies on a valid env.yml at project root\.',
+                'Ensure that this file is valid.\n\n');
     process.exit(1);
 }
 const UPLOADDELIM = process.env.uploaddelim;
@@ -39,7 +41,7 @@ test('Notify Hook', async function(){
     axios.post.mockImplementation(function(url, data){ return data; });
 
     //////////////////////////////////////////////
-    // Tests
+    // Run
     //////////////////////////////////////////////
     await request.handler(mockevent, mockcontext);
     Object.keys(mockuploads).map(function(uid){
