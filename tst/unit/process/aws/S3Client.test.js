@@ -21,6 +21,8 @@ jest.mock('aws-sdk', function(){
 });
 jest.mock('fs');
 
+const fs = require('fs');
+const path = require('path');
 const S3Client = require('../../../../src/process/aws/S3Client.js');
 
 //////////////////////////////////////////////
@@ -28,10 +30,20 @@ const S3Client = require('../../../../src/process/aws/S3Client.js');
 //////////////////////////////////////////////
 const s3Client = new S3Client();
 
-test.skip('S3Client class: download()', async function(){
-    await s3Client.download();
+test('S3Client class: download()', async function(){
+    let mockws = '123123123';
+    let mockuid = 'abc123abc';
+    let mockimg = {'data': Buffer.from('lalala'), 'ContentEncoding': 'utf-8'};
+
+    mockS3.promise.mockImplementation(function(){
+        return mockimg;
+    });
+
+    let dst = await s3Client.download(mockws, mockuid);
+    expect(dst).toContain(path.join(mockws, mockuid));
+    expect(fs.writeFile).toBeCalledWith(dst, mockimg.data, mockimg.ContentEncoding);
 });
 
-test.skip('S3Client class: upload()', async function(){
+test('S3Client class: upload()', async function(){
     await s3client.upload()
 });

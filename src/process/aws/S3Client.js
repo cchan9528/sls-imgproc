@@ -10,7 +10,7 @@ class S3Client {
             s3ForcePathStyle: true,
             accessKeyId: process.env.s3accessKeyId,
             secretAccessKey: process.env.s3secretAccessKey,
-            endpoint: new AWS.Endpoint('http://'+process.env.s3host+':'+process.env.s3port),
+            endpoint: new AWS.Endpoint(`http://${process.env.s3host}:${process.env.s3port}`)
         });
         this._bucket = process.env.s3bucket;
     }
