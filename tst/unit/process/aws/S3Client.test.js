@@ -19,9 +19,9 @@ jest.mock('aws-sdk', function(){
         'Endpoint' : jest.fn()
     }
 });
-jest.mock('fs');
+jest.mock('fs/promises');
 
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
 const S3Client = require('../../../../src/process/aws/S3Client.js');
 
@@ -33,7 +33,7 @@ const s3Client = new S3Client();
 test('S3Client class: download()', async function(){
     let mockws = '123123123';
     let mockuid = 'abc123abc';
-    let mockimg = {'data': Buffer.from('lalala'), 'ContentEncoding': 'utf-8'};
+    let mockimg = {data: Buffer.from('lalala'), ContentEncoding: 'utf-8'};
 
     mockS3.promise.mockImplementation(function(){
         return mockimg;
@@ -45,5 +45,21 @@ test('S3Client class: download()', async function(){
 });
 
 test('S3Client class: upload()', async function(){
-    await s3client.upload()
+    let mockws = '123123123';
+    let mockuid = 'abc123abc';
+    let mockres = {
+        ETag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
+        VersionId: "psM2sYY4.o1501dSx8wMvnkOzSBB.V4a"
+    };
+
+    fs.readFile.mockImplementation(function(mockpath){
+        expect(mockpath).toContain(path.join(mockws, mockuid));
+    });
+
+    mockS3.promise.mockImplementation(function(){
+        return mockres;
+    })
+
+    let res = await s3Client.upload(mockws, mockuid);
+    expect(res).toEqual(mockres);
 });

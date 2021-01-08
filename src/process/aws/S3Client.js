@@ -1,8 +1,9 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
 const AWS = require('aws-sdk');
 
 const DLM = process.env.UPLOADDELIM;
+const IMGDIR = '/tmp';
 
 class S3Client {
     constructor() {
@@ -27,7 +28,7 @@ class S3Client {
         //////////////////////////////////////////////
         // Write file locally so it can be processed
         //////////////////////////////////////////////
-        let localpath = path.join('/tmp', ws, uid);
+        let localpath = path.join(IMGDIR, ws, uid);
         await fs.writeFile(localpath, image.data, image.ContentEncoding);
 
         //////////////////////////////////////////////
@@ -36,16 +37,15 @@ class S3Client {
         return localpath;
     }
 
-    async upload(img){
-        const [ , ws, uid] = img.split(DLM);         // websocket id, img uid
-
+    async upload(ws, uid){
         //////////////////////////////////////////////
         // Upload image (e.g. outputs of processing)
         //////////////////////////////////////////////
+        let img = await fs.readFile(path.join(IMGDIR, ws, uid));
         let res = await this._s3Client.putObject({
             Bucket: this._bucket,                  // Target S3 Bucket
             Key: `outputs${DLM}${ws}${DLM}${uid}`, // Path in bucket
-            Body: new Buffer('cdasdsdf')           // Data to store at path
+            Body: img                              // Data to store at path
         }).promise();
 
         return res;
