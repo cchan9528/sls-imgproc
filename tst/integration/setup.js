@@ -19,8 +19,8 @@ async function main() {
     const OPTIONS = {
         'shell' : true,
         'cwd' : projectRoot };
-    global.__slsOffline = await spawnProcess(COMMAND, OPTIONS);
-    console.log("\n\nStarted serverless offline...\n\n");
+    global.__serverlessOffline = await spawnProcess(COMMAND, OPTIONS);
+    console.log(`\n\nStarted serverless offline with PID ${global.__serverlessOffline.pid}...\n\n`);
 }
 
 module.exports = main;

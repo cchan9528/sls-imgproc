@@ -1,24 +1,21 @@
 const Constants = require('constants');
 
-function stopServerlessOffline(slsOffline) {
-    slsOffline.stdin.write('q\n');
-    slsOffline.stdin.pause();
-    slsOffline.kill();
-    console.log(`Killed ${globalConfig.processes[Constants.SLSOFFLINE]}`);
-};
+async function stopProcess(process) {
+    const INTERRUPT = 'SIGINT';
 
-async function main(globalConfig) {
-    stopServerlessOffline(globalConfig.processes[Constants.SLSOFFLINE]);
+    return new Promise(function(resolve, reject){
+        console.log(`\n\nKilling process with PID ${process.pid}...`);
+        process.on('exit', function(code, signal){
+            console.log(
+                `Process exited with ${(code) ? 'code' : 'signal'}: ${signal}`); });
+        process.kill(INTERRUPT);
+        console.log(`...done.\n\n`);
+    });
 }
 
-function stopProcess(proc) {
-    proc.stdin.write('q\n');
-    proc.stdin.pause();
-    proc.kill();
+async function main(){
+    let serverlessOffline = global.__serverlessOffline;
+    await stopProcess(serverlessOffline);
 }
 
-// module.exports = main;
-
-module.exports = async function() {
-    console.log("goodbye, world!");
-}
+module.exports = main;
