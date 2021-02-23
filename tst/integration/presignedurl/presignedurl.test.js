@@ -1,24 +1,17 @@
-const mockS3 = { createPresignedPost : jest.fn() };
-jest.mock('aws-sdk', function(){
-    return {
-        'S3' : jest.fn(function(){ return mockS3; }),
-        'Endpoint' : jest.fn()
-    }
-});
 const WebSocket = require('ws');
-const ENDPOINT = 'ws://localhost:3001';
 
-test('Get a presignedurl', function(done){
-    const mockerr = null;
-    const mockpresignedurl = 'helloworld!';
-    mockS3.createPresignedPost.mockImplementation(function(options, cb){
-         cb(mockerr, mockpresignedurl);
-    });
+test('Get a presignedurl', function(done) {
+    const serverlessOffline = 'ws://localhost:3001';
+    const serverlessS3Local = 'http://localhost:4569/local-bucket';
 
-    const ws = new WebSocket(ENDPOINT);
+    const ws = new WebSocket(serverlessOffline);
     ws.on('message', function(data) {
-        try{
-            expect(data).toEqual({ 'statusCode' : 200, 'body' : mockpresignedurl });
+        try {
+            data = JSON.parse(data);
+            expect(data).toHaveProperty('statusCode', 200);
+            expect(data).toHaveProperty('body');
+            expect(data.body).toHaveProperty('url');
+            expect(data.body.url).toEqual(serverlessS3Local);
             done();
         } catch (err) {
             done(err);
