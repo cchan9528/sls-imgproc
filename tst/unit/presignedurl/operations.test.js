@@ -34,6 +34,6 @@ test('Basic get S3 Signed URL', async function() {
         cb(mockerr, mockpresignedurl);
     });
 
-    let res = await operations.getPresignedUrl(mockreq);
+    let res = await operations.getPresignedS3Access(mockreq);
     expect(res).toBe(mockpresignedurl);
 });

@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 
-async function getPresignedUrl(options) {
+async function getPresignedS3Access(options) {
     let url = 'http://'+process.env.s3host+':'+process.env.s3port;
     const s3client = new AWS.S3({
         s3ForcePathStyle: true,
@@ -16,15 +16,15 @@ async function getPresignedUrl(options) {
             Fields : {
                 key : `upload/${options.uid}`,
             }
-        }, function(err, presignedurl){
+        }, function(err, presignedS3Access){
             if (err) {
                 reject(err);
             }
-            resolve(presignedurl);
+            resolve(presignedS3Access);
         });
     });
 };
 
 module.exports = {
-    'getPresignedUrl' : getPresignedUrl
+    'getPresignedS3Access' : getPresignedS3Access
 };

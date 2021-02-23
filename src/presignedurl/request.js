@@ -1,25 +1,19 @@
 const axios = require('axios');
 const operations = require('./operations.js');
 
+const APIGATEWAY = 'http://localhost:3001/@connections'
+
 async function handler(event, context){
-    let options = { 'uid' : event.requestContext.connectionId };
-    await operations.getPresignedUrl(options, async function(err, presignedurl){
-        let res = {};
-        if (err) {
-            res.statusCode = 500;
-            res.err = JSON.stringify(err);
-        } else {
-            res.statusCode = 200;
-            res.body = presignedurl;
-        }
-        try {
-            let user = `http://localhost:3001/@connections/${options.uid}`;
-            await axios.post(user, res);
-        }
-        catch (err) {
-            console.log(err);
-        }
-    });
+    let uid = event.requestContext.connectionId;
+    let res = {};
+    try {
+        res.body = await operations.getPresignedS3Access({ uid });
+        res.statusCode = 200;
+    } catch (err) {
+        res.err = JSON.stringify(err);
+        res.statusCode = 500;
+    }
+    await axios.post(`${APIGATEWAY}/${uid}`, res);
 };
 
 module.exports = {

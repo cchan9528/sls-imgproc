@@ -5,9 +5,6 @@ async function stopProcess(process) {
 
     return new Promise(function(resolve, reject){
         console.log(`\n\nKilling process with PID ${process.pid}...`);
-        process.on('exit', function(code, signal){
-            console.log(
-                `Process exited with ${(code) ? 'code' : 'signal'}: ${signal}`); });
         process.kill(INTERRUPT);
         console.log(`...done.\n\n`);
     });
@@ -15,6 +12,9 @@ async function stopProcess(process) {
 
 async function main(){
     let serverlessOffline = global.__serverlessOffline;
+    serverlessOffline.on('exit', function(code, signal){
+        console.log(
+            `serverlessOffline exited ${(code || signal!='SIGINT') ? 'badly' : 'safely'}`); });
     await stopProcess(serverlessOffline);
 }
 
