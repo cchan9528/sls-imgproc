@@ -3,15 +3,18 @@ const FormData = require('form-data');
 const WebSocket = require('ws');
 
 test('Notify on S3 Upload', function(done) {
-    let connected = false;
+    let connectionId = null;
     let ws = getServerlessOfflineClient();
     ws.on('message', function(data) {
         const message = JSON.parse(data);
-        if (!connected) {
-            connected = true;
+        if (!connectionId) {
+            connectionId = message.body.fields.key.split('/')[1];
+            console.log(message.body);
             uploadObjectToServerlessS3Local(message.body);
         } else {
-            // Add expectations here
+            console.log(message);
+            expect(message.statusCode).toEqual(200);
+            expect(message.success).toEqual(true);
             done();
         }
     });
